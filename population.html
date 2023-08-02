@@ -1,0 +1,69 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Population Growth Calculator</title>
+</head>
+<body>
+
+<h1>Population Growth Calculator</h1>
+
+<form id="populationForm">
+    <label for="startingPopulation">Starting Population:</label>
+    <input type="number" id="startingPopulation" value="8" required>
+
+    <label for="yearsToCalculate">Years to Calculate:</label>
+    <input type="number" id="yearsToCalculate" value="4100" required>
+
+    <input type="submit" value="Calculate">
+</form>
+
+<h2>Results:</h2>
+<div id="output"></div>
+
+<script>
+    const current_population = 8000000000;
+
+    function numberWithCommas(x) {
+        return x.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",");
+    }
+
+    document.getElementById("populationForm").addEventListener("submit", function(e) {
+        e.preventDefault();
+
+        let startingPopulation = parseFloat(document.getElementById("startingPopulation").value);
+        const yearsToCalculate = parseFloat(document.getElementById("yearsToCalculate").value);
+        
+        if (isNaN(startingPopulation) || isNaN(yearsToCalculate) || startingPopulation <= 0 || yearsToCalculate <= 0) {
+            alert("Please enter valid positive numbers.");
+            return;
+        }
+
+        let outputString = '';
+        const r = Math.pow(current_population / startingPopulation, 1 / yearsToCalculate) - 1;
+
+        let current_value = startingPopulation;
+        const results = [current_value];
+
+        for (let i = 1; i <= yearsToCalculate; i++) {
+            current_value *= (1 + r);
+            if (i % 500 === 0 || i === yearsToCalculate) {
+                results.push(current_value);
+            }
+        }
+
+        for (let i = 0; i < results.length; i++) {
+            outputString += `Year ${i * 500}: ${numberWithCommas(results[i].toFixed(0))}<br>`;
+        }
+
+        document.getElementById("output").innerHTML = `
+            Annual Percentage Increase: ${(r * 100).toFixed(2)}%<br><br>
+            ${outputString}
+        `;
+    });
+</script>
+
+
+</body>
+</html>

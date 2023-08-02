@@ -1,0 +1,73 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Custom Population Growth Calculator</title>
+	
+	
+    <style>
+        .overpopulated {
+            color: red;
+        }
+    </style>
+</head>
+<body>
+
+<h3>Population Growth Calculator</h3>
+<h2>The current world population is 8 Billion people.  If the printed output becomes Red you have exceeded this number.  Scientist have estimated that Humans have existed for 190,000 years.  See if you can get the annual population percentage growth low enough to fit their model.</h2>
+
+<h2>Noahs Ark Landed approximately 4,100 years ago, with a world population of 8 people.  With an annual population growth of about .5 percent you will get close to the worlds population.</h2>
+<label for="startingPopulation">Starting Population:</label>
+<input type="number" id="startingPopulation" value="8">
+<br>
+
+<label for="years">Years to Calculate:</label>
+<input type="number" id="years" value="4100">
+<br>
+
+<label for="growthRate">Population Percentage Increase:</label>
+<input type="range" id="growthRate" min="0.1" max="2" step="0.01" value="0.5" style="width: 100%;"> 
+<span id="growthRateDisplay">0.5%</span>
+<br>
+
+<button onclick="calculatePopulation()">Calculate</button>
+
+<h3>Results:</h3>
+<pre id="output"></pre>
+
+<script>
+function calculatePopulation() {
+    const MAX_POPULATION = 8000000000;
+    let startingPopulation = parseFloat(document.getElementById('startingPopulation').value);
+    let years = parseInt(document.getElementById('years').value);
+    let growthRate = parseFloat(document.getElementById('growthRate').value) / 100;
+    
+    let output = '';
+    let currentPopulation = startingPopulation;
+    let hasExceeded = false;
+
+    for (let year = 1; year <= years; year++) {
+        currentPopulation += currentPopulation * growthRate;
+        
+        if (currentPopulation > MAX_POPULATION && !hasExceeded) {
+            hasExceeded = true;
+            output += '<span class="overpopulated">Population exceeds world population.\n';
+        }
+
+        if (year % 500 === 0 || year === years) {
+            let line = `Year ${year}: ${currentPopulation.toLocaleString('en-US', { maximumFractionDigits: 2 })}\n`;
+            output += (currentPopulation > MAX_POPULATION) ? `<span class="overpopulated">${line}</span>` : line;
+        }
+    }
+    
+    document.getElementById('output').innerHTML = output;
+}
+
+document.getElementById('growthRate').addEventListener('input', function() {
+    document.getElementById('growthRateDisplay').textContent = parseFloat(this.value).toFixed(2) + '%';
+});
+</script>
+
+</body>
+</html>
